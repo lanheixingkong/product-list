@@ -46,7 +46,8 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi) extends Contr
   }
 
 
-  def list = Action { implicit request =>
+  def list(page: Int) = Action { implicit request =>
+    println("Page:"+page)
     val products = Product.findAll
     Ok(views.html.products(products))
   }
@@ -63,4 +64,13 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi) extends Contr
     }.getOrElse(NotFound)
 
   }
+
+//  def list =
+//    Authenticated {
+//      Cached {
+//        Action {
+//          // Process request…
+//        }
+//      }
+//    }
 }

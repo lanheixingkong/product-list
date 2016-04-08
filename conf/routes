@@ -5,7 +5,9 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 # An example controller showing how to write asynchronous code
-GET     /products                    controllers.ProductsController.list
+#GET     /products                    controllers.ProductsController.list
+GET     /products                    controllers.ProductsController.list(page: Int ?= 1)
+
 
 POST    /products                   controllers.ProductsController.save
 
@@ -18,7 +20,12 @@ GET     /products/:ean               controllers.ProductsController.show(ean: Lo
 GET     /barcode/:ean               controllers.BarcodesController.barcode(ean: Long)
 
 
-
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+#使用“*”代替“:“，可以匹配代“/”的URL，如：/photo/5010255079763.jpg 或者/photo/customer-submissions/5010255079763/42.jpg
+#GET    /photo/*file                controllers.Media.photo(file: String)
+
+#使用正则表达式区分不同类型参数
+#GET    /product/$ean<\d{13}>       controllers.Products.details(ean: Long)   # /product/5010255079763
+#GET    /product/:alias             controllers.Products.alias(alias: String)  # /product/paper-clips-large-plain-1000-pack
