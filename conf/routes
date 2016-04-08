@@ -11,7 +11,7 @@ POST    /products                   controllers.ProductsController.save
 
 GET     /products/new               controllers.ProductsController.newProduct
 
-GET     /products/remove/:ean        controllers.ProductsController.remove(ean: Long)
+GET     /products/:ean/remove        controllers.ProductsController.remove(ean: Long)
 
 GET     /products/:ean               controllers.ProductsController.show(ean: Long)
 
