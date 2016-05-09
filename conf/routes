@@ -8,12 +8,13 @@ GET     /                           controllers.HomeController.index
 #GET     /products                    controllers.ProductsController.list
 GET     /products                    controllers.ProductsController.list(page: Int ?= 1)
 
+GET     /productsWithStockItem       controllers.ProductsController.listWithStockItem(page: Int ?= 1)
 
 POST    /products                   controllers.ProductsController.save
 
 GET     /products/new               controllers.ProductsController.newProduct
 
-GET     /products/:ean/remove        controllers.ProductsController.remove(ean: Long)
+GET     /products/:ean/delete        controllers.ProductsController.delete(ean: Long)
 
 GET     /products/:ean               controllers.ProductsController.show(ean: Long)
 
@@ -29,3 +30,5 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 #使用正则表达式区分不同类型参数
 #GET    /product/$ean<\d{13}>       controllers.Products.details(ean: Long)   # /product/5010255079763
 #GET    /product/:alias             controllers.Products.alias(alias: String)  # /product/paper-clips-large-plain-1000-pack
+
+GET     /json                       controllers.ProductsController.json

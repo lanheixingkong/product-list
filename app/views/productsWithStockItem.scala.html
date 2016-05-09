@@ -1,11 +1,14 @@
-@(products: List[Product])(implicit flash: Flash, messages: Messages)
+@(productMap: Map[Product, List[StockItem]])(implicit flash: Flash, messages: Messages)
 
 @main(Messages("application.name")) {
     <dl class="products">
-    @for(product <- products) {
+    @for((product, stockItems) <- productMap) {
         <dt><a href="@controllers.routes.ProductsController.show(product.ean)">@product.name</a></dt>
         <dd>@product.descr<a href="@controllers.routes.ProductsController.delete(product.id)"
         class="btn"><i class="icon-remove"></i> @Messages("products.remove.command")</a></dd>
+        @for(stockItem <- stockItems) {
+            <dd>Quantity:@stockItem.quantity</dd>
+        }
     }
     </dl>
 

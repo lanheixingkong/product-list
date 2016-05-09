@@ -9,6 +9,7 @@
             <legend>
             @Messages("products.details", Messages("products.new"))
             </legend>
+            @inputText(productForm("id"))
             @inputText(productForm("ean"))
             @inputText(productForm("name"))
             @textarea(productForm("descr"))

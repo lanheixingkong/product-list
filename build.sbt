@@ -11,6 +11,8 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   "net.sf.barcode4j" % "barcode4j" % "2.0",
+  "mysql" % "mysql-connector-java" % "5.1.25",
+  "com.typesafe.play" %% "anorm" % "2.4.0",
 "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0-RC1" % Test
 
 )
