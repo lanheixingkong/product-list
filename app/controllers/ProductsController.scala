@@ -26,6 +26,15 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
       )(Product.apply)(Product.unapply)
   }
 
+//  private val productForm2: Form[Product] = Form{
+//    mapping(
+//      "ean" -> longNumber.verifying("validation.ean.duplicate", Product.findByEan(_).isEmpty),
+//      "name" -> nonEmptyText,
+//      "descr" -> nonEmptyText
+//    )((ean, name, descr) => Product(null, ean, name, descr))( product => None)
+////    )((ean, name, descr) => Product(null, ean, name, descr))( product => Some[(product.ean, product.name, product.descr)])
+//  }
+
   def save = Action { implicit request =>
     val newProductForm = this.productForm.bindFromRequest()
 
