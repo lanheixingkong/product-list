@@ -1,4 +1,4 @@
-@(productMap: Map[Product, List[StockItem]])(implicit flash: Flash, messages: Messages)
+@(productMap: Map[Product, List[StockItem]])(implicit flash: Flash, messages: Messages, cart: Cart)
 
 @main(Messages("application.name")) {
     <dl class="products">

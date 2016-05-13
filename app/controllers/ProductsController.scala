@@ -2,14 +2,20 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import models.{Product, ProductDao}
+import dao.ProductDao
+import models.{Cart, Product}
+import mytrait.WithCart
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, Controller, Flash}
+import play.api.mvc.{Action, Controller, Flash, Request}
 
 @Singleton
-class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDao: ProductDao) extends Controller with I18nSupport {
+class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDao: ProductDao) extends Controller with I18nSupport with WithCart{
+//  implicit val cart = getCart()
+//  implicit def cart(): Cart = {
+//    Cart(13)
+//  }
 
   private val productForm: Form[Product] = Form{
       mapping(
@@ -54,8 +60,9 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
 //    val products = productDao.getAll
 //    val products = productDao.getAllWithPatterns
     val products = productDao.getAllWithParser
-
-    Ok(views.html.products(products)).withSession(request.session + ("username" -> "lei"))
+    val html = views.html.products(products)
+//    println(s"HTML-->$html")
+    Ok(html).withSession(request.session + ("username" -> "lei"))
   }
 
   def listWithStockItem(page: Int) = Action { implicit request =>
@@ -83,6 +90,7 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
     }.getOrElse(NotFound)
 
   }
+
 
 //  def list =
 //    Authenticated {

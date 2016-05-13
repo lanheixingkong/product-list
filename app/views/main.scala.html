@@ -4,7 +4,7 @@
  * two arguments, a `String` for the title of the page and an `Html`
  * object to insert into the body of the page.
  *@
-@(title: String)(content: Html)(implicit flash: Flash, messages: Messages)
+@(title: String)(content: Html)(implicit flash: Flash, messages: Messages, cart: Cart)
 
 <!DOCTYPE html>
 <html >
@@ -26,7 +26,16 @@
                     </div>
                 </div>
             </div>
-
+            @navigation()
+            <div id="cartSummary">
+                <p>
+                @defining(cart.productCount) { count => @count match {
+                        case 0 => { Your shopping cart is empty }
+                        case n => { You have @n items in your shopping cart.}
+                    }
+                }
+                </p>
+            </div>
             <div class="container">
                 @if(flash.get("success").isDefined){
                     <div class="alert alert-success">
