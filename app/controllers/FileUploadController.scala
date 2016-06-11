@@ -3,7 +3,9 @@ package controllers
 import java.io.File
 import javax.inject._
 
+import play.api.data.Form
 import play.api.mvc.{Action, Controller}
+import views.html.helper.form
 
 
 /**
@@ -23,7 +25,16 @@ class FileUploadController @Inject() extends Controller {
   }.getOrElse(BadRequest("File missing!"))
   }
 
-
+//  def ignoredUpload() = Action(parse.multipartFormData) { implicit request =>
+//    val form = Form(tuple(
+//      ￼￼    "description" -> text,
+//    "image" -> ignored(request.body.file("image")).
+//      verifying("File missing", _.isDefined)))
+//    form.bindFromRequest.fold(
+//      formWithErrors => {
+//        Ok(views.html.fileupload.uploadform(formWithErrors))
+//      },
+//      value => Ok }
 
   def toUpload = Action {
     Ok(views.html.upload())

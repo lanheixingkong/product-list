@@ -13,6 +13,10 @@
             @inputText(productForm("ean"))
             @inputText(productForm("name"))
             @textarea(productForm("descr"))
+            @* 同时验证多个字段返回的globalError错误信息 *@
+            @productForm.globalError.map { error =>
+                <span class="error">@error.message</span>
+            }
         </fieldset>
         <p><input type="submit" class="btn primary"
         value='@Messages("products.new.submit")'></p>

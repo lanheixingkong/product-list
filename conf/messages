@@ -1,7 +1,7 @@
 application.name = Product catalog
 ean = EAN
 name = Name
-description = Description
+descr = Description
 products.details = Product: {0}
 products.form = Product details
 products.new = (new)

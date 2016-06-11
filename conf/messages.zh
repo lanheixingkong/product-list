@@ -1,7 +1,7 @@
 application.name = 产品分类
 ean = 编号
 name = 名称
-description = 描述
+descr = 描述
 products.details = 产品: {0}
 products.form = 产品详情
 products.new = (新增)

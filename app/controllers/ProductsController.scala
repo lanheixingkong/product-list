@@ -3,12 +3,14 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import dao.ProductDao
-import models.{Cart, Product}
+import models.{Person, Product}
 import mytrait.WithCart
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, Controller, Flash, Request}
+import play.api.libs.json.Json
+import play.api.mvc.{Action, Controller, Flash}
+
 
 @Singleton
 class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDao: ProductDao) extends Controller with I18nSupport with WithCart{
@@ -17,13 +19,24 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
 //    Cart(13)
 //  }
 
+//  private val productForm: Form[Product] = Form{
+//      mapping(
+//        "id" -> longNumber,
+//        "ean" -> longNumber.verifying("validation.ean.duplicate", productDao.getByEan(_).isEmpty),
+//        "name" -> nonEmptyText,
+//        "descr" -> nonEmptyText
+//      )(Product.apply)(Product.unapply)
+//  }
+
+  //同时验证多个字段 product => product.descr.nonEmpty || product.name.nonEmpty
+  //错误信息需要在模板中通过globalError获取
   private val productForm: Form[Product] = Form{
-      mapping(
-        "id" -> longNumber,
-        "ean" -> longNumber.verifying("validation.ean.duplicate", Product.findByEan(_).isEmpty),
-        "name" -> nonEmptyText,
-        "descr" -> nonEmptyText
-      )(Product.apply)(Product.unapply)
+    mapping(
+      "id" -> longNumber,
+      "ean" -> longNumber.verifying("validation.ean.duplicate", productDao.getByEan(_).isEmpty),
+      "name" -> text,
+      "descr" -> text
+    )(Product.apply)(Product.unapply).verifying("Name or Descr is non empty", product => product.descr.nonEmpty || product.name.nonEmpty)
   }
 
 //  private val productForm2: Form[Product] = Form{
@@ -35,6 +48,15 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
 ////    )((ean, name, descr) => Product(null, ean, name, descr))( product => Some[(product.ean, product.name, product.descr)])
 //  }
 
+  //Option字段验证,如果传来参数是空,可自动包装成None
+  private val personForm: Form[Person] = Form {
+    mapping(
+      "name" -> nonEmptyText,
+      "age" -> optional(number)
+    )(Person.apply)(Person.unapply)
+  }
+
+
   def save = Action { implicit request =>
     val newProductForm = this.productForm.bindFromRequest()
 
@@ -43,6 +65,9 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
           Redirect(routes.ProductsController.newProduct())
             .flashing(Flash(form.data) + ("error" -> Messages("validation.errors")))
         },
+//      hasErrors = { form =>
+//        Ok(views.html.editProduct(form))
+//      },
 
         success = { newProduct =>
 //          Product.add(newProduct)
@@ -59,7 +84,9 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
     else
       this.productForm
 
-    Ok(views.html.editProduct(form))
+    val html = views.html.editProduct(form)
+    println(s"newProduct HTML-->$html")
+    Ok(html)
   }
 
 
@@ -94,11 +121,22 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
     val sessionID = request.session
     println("username:" + username.getOrElse("messi") + "--sessionID:" + sessionID)
 
-    Product.findByEan(ean).map{ product =>
-      Ok(views.html.productDetails(product))
-    }.getOrElse(NotFound)
+    productDao.getByEan(ean).map{ product =>
+            Ok(views.html.productDetails(product))
+          }.getOrElse(NotFound)
 
   }
+
+//  def show(ean: Long) = Action { implicit request =>
+//    val username = request.session.get("username")
+//    val sessionID = request.session
+//    println("username:" + username.getOrElse("messi") + "--sessionID:" + sessionID)
+//
+//    Product.findByEan(ean).map{ product =>
+//      Ok(views.html.productDetails(product))
+//    }.getOrElse(NotFound)
+//
+//  }
 
 
 //  def list =
@@ -112,7 +150,6 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
 
 //  返回JSON格式的两种方式：1.转成Json字符串，直接返回(会设置请求头Content-Type:application/json) 2.使用模板返回（类似Html页面）
   def json = Action {
-    import play.api.libs.json.Json
     val success = Map("status" -> "success")
     val json = Json.toJson(success)
     Ok(json)
@@ -120,7 +157,6 @@ class ProductsController  @Inject() (val messagesApi: MessagesApi, val productDa
 
 
   def xml = Action {
-    import scala.xml.NodeSeq
    Ok
   }
 }

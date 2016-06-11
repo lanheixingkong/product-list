@@ -74,6 +74,13 @@ class ProductDao @Inject()(db: Database){
       results.groupBy(_._1).mapValues(_.map(_._2))
   }
 
+  def getByEan(ean: Long): Option[Product] = db.withConnection{
+    implicit connetion =>
+      val sql = SQL("select * from products where ean = {ean}").on("ean" -> ean)
+      sql().map( row =>
+        Product(row[Long]("id"), row[Long]("ean"), row[String]("name"), row[String]("descr"))).find(_.ean == ean)
+  }
+
   def insert(product: Product):Boolean = db.withConnection{
     implicit connection =>
       SQL("""insert into products(ean, name, descr) values ({ean}, {name}, {descr})""").on(
@@ -99,4 +106,7 @@ class ProductDao @Inject()(db: Database){
         "id" -> id
       ).executeUpdate() == 1
   }
+
+
+//  def eanExists(ean: Long) = getByEan(ean).isEmpty
 }
